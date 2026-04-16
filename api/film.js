@@ -34,7 +34,6 @@ async function buildFilmPool(apiKey) {
     .flatMap(p => p.results || [])
     .filter(m =>
       m.vote_count >= MIN_VOTES &&
-      m.vote_average >= MIN_RATING &&
       m.original_language === 'en' &&
       !m.genre_ids.includes(16) // exclude animation
     )
