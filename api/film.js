@@ -2,7 +2,6 @@
 
 const BASE = 'https://api.themoviedb.org/3';
 const MIN_VOTES = 5000;
-const MIN_RATING = 7.0;
 const PAGES_TO_FETCH = 10;
 
 // Deterministic shuffle using a seed (Fisher-Yates)
@@ -19,7 +18,7 @@ function seededShuffle(arr, seed) {
 
 // Day number since a fixed epoch — increments by 1 each day, never repeats
 function getDayNumber(dateStr) {
-  const epoch = new Date('2025-01-01');
+  const epoch = new Date('2025-01-02');
   const today = new Date(dateStr);
   return Math.floor((today - epoch) / 86400000);
 }
