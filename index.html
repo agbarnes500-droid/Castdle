@@ -32,11 +32,8 @@
   .card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:14px}
 
   /* MODE TOGGLE */
-  .mode-toggle{display:flex;background:var(--bg);border-radius:var(--radius-pill);padding:4px;gap:4px;margin-bottom:16px}
-  .mode-opt{flex:1;padding:8px;border:none;background:transparent;border-radius:var(--radius-pill);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all var(--tr);color:var(--text2)}
-  .mode-opt.active-easy{background:var(--surface);box-shadow:var(--shadow);color:var(--gold-dark)}
-  .mode-opt.active-hard{background:var(--surface);box-shadow:var(--shadow);color:var(--red)}
-  .mode-opt:disabled{opacity:0.5;cursor:not-allowed}
+  .mode-pick-btn{width:100%;padding:14px 16px;background:var(--bg);border:2px solid var(--gold);border-radius:var(--radius-sm);cursor:pointer;text-align:left;transition:all var(--tr)}
+  .mode-pick-btn:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:var(--shadow)}
 
   /* CAST */
   .cast-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
@@ -198,15 +195,34 @@
 
 <div class="main" id="game-screen">
   <div id="loading" class="loading">Loading today's film…</div>
+  <!-- MODE PICKER (shown first) -->
+  <div id="mode-picker" style="display:none">
+    <div class="card" style="text-align:center;padding:28px 20px">
+      <div style="font-size:2rem;margin-bottom:8px">🎬</div>
+      <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">Choose your difficulty</div>
+      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:24px">You can't change this once the game starts</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="mode-pick-btn" id="pick-easy">
+          <div style="font-size:1rem;font-weight:700;color:var(--gold-dark)">Easy</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-top:2px">Actor names + character names shown</div>
+        </button>
+        <button class="mode-pick-btn" id="pick-hard" style="border-color:#fca5a5">
+          <div style="font-size:1rem;font-weight:700;color:var(--red)">Hard</div>
+          <div style="font-size:0.8rem;color:var(--text2);margin-top:2px">Actor names only — no character names</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME (shown after mode selected) -->
   <div id="game-inner" style="display:none">
     <div class="card">
-      <div class="mode-toggle">
-        <button class="mode-opt active-easy" id="btn-easy">Easy · Characters shown</button>
-        <button class="mode-opt" id="btn-hard">Hard · Names only</button>
-      </div>
       <div class="cast-header">
         <span class="cast-title">Cast revealed</span>
-        <span class="cast-badge" id="cast-badge">Clue 1 of 6</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="mode-badge" class="cast-badge"></span>
+          <span class="cast-badge" id="cast-badge">Clue 1 of 6</span>
+        </div>
       </div>
       <div id="cast-list"></div>
     </div>
@@ -269,7 +285,7 @@ const HINTS_DEF=[
   {key:'genre',    label:'Genre',    fmt:f=>f.genre,    wide:false},
   {key:'director', label:'Director', fmt:f=>f.director, wide:false},
   {key:'runtime',  label:'Runtime',  fmt:f=>f.runtime,  wide:false},
-  {key:'boxoffice', label:'Box Office', fmt:f=>f.boxoffice, wide:false},
+  {key:'tagline',  label:'Tagline',  fmt:f=>f.tagline||'No tagline available', wide:true},
 ];
 
 // ── STATE ──────────────────────────────────────────────────────────────────
@@ -399,29 +415,33 @@ async function boot(){
   document.getElementById('cast-list').innerHTML='';
   document.getElementById('toast').textContent='';
   renderStreakPill();
-  setMode('easy');
-  renderHints();
-  renderPips();
   document.getElementById('loading').style.display='none';
-  document.getElementById('game-inner').style.display='block';
+  showModePicker();
   if(!Store.get('castdle_seen'))document.getElementById('modal-bg').style.display='flex';
 }
 
-// ── MODE ───────────────────────────────────────────────────────────────────
-function setMode(m){
-  mode=m;
-  document.getElementById('btn-easy').className='mode-opt'+(m==='easy'?' active-easy':'');
-  document.getElementById('btn-hard').className='mode-opt'+(m==='hard'?' active-hard':'');
-  const items=document.getElementById('cast-list').querySelectorAll('.cast-face');
-  items.forEach((face,i)=>{
-    const c=film.cast[i]; if(!c)return;
-    face.innerHTML=`<span class="cast-num">${i+1}</span><span class="actor-name">${c.name}</span>`+
-      (m==='easy'?`<span class="role-pill">${c.role}</span>`:`<span class="role-hidden">&#9608;&#9608;&#9608;&#9608;</span>`);
-  });
-  if(items.length===0)addCastCard(0);
+// ── MODE PICKER ────────────────────────────────────────────────────────────
+function showModePicker(){
+  document.getElementById('mode-picker').style.display='block';
+  document.getElementById('game-inner').style.display='none';
 }
-document.getElementById('btn-easy').addEventListener('click',()=>{if(gameOver||guessNum>0)return;setMode('easy');});
-document.getElementById('btn-hard').addEventListener('click',()=>{if(gameOver||guessNum>0)return;setMode('hard');});
+
+function startGame(m){
+  mode=m;
+  document.getElementById('mode-picker').style.display='none';
+  document.getElementById('game-inner').style.display='block';
+  const badge=document.getElementById('mode-badge');
+  if(m==='easy'){badge.textContent='Easy';badge.style.background='var(--gold-light)';badge.style.color='var(--gold-dark)';}
+  else{badge.textContent='Hard';badge.style.background='var(--red-bg)';badge.style.color='var(--red)';}
+  addCastCard(0);
+  renderHints();
+  renderPips();
+}
+
+document.getElementById('pick-easy').addEventListener('click',()=>startGame('easy'));
+document.getElementById('pick-hard').addEventListener('click',()=>startGame('hard'));
+
+// ── MODE (in-game, locked) ─────────────────────────────────────────────────
 
 // ── CAST CARDS ─────────────────────────────────────────────────────────────
 function addCastCard(i){
