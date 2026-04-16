@@ -1,10 +1,9 @@
 // api/film.js
 
 const BASE = 'https://api.themoviedb.org/3';
-const MIN_VOTES = 5000;
-const PAGES_TO_FETCH = 10;
+const MIN_VOTES = 1000; // lowered to let more films in
+const PAGES_TO_FETCH = 25; // more pages from each list
 
-// Deterministic shuffle using a seed (Fisher-Yates)
 function seededShuffle(arr, seed) {
   const a = [...arr];
   let s = seed;
@@ -16,21 +15,56 @@ function seededShuffle(arr, seed) {
   return a;
 }
 
-// Day number since a fixed epoch — increments by 1 each day, never repeats
 function getDayNumber(dateStr) {
-  const epoch = new Date('2025-01-02');
+  const epoch = new Date('2025-01-01');
   const today = new Date(dateStr);
   return Math.floor((today - epoch) / 86400000);
 }
 
 async function buildFilmPool(apiKey) {
-  const pages = await Promise.all(
-    Array.from({ length: PAGES_TO_FETCH }, (_, i) =>
+  // Fetch from multiple TMDB lists in parallel for maximum coverage
+  const [topRatedPages, popularPages, nowPlayingPages, discoverActionPages, discoverDramaPages, discoverThrillerPages] = await Promise.all([
+    Promise.all(Array.from({ length: PAGES_TO_FETCH }, (_, i) =>
       fetch(`${BASE}/movie/top_rated?api_key=${apiKey}&page=${i + 1}`).then(r => r.json())
-    )
-  );
-  return pages
-    .flatMap(p => p.results || [])
+    )),
+    Promise.all(Array.from({ length: PAGES_TO_FETCH }, (_, i) =>
+      fetch(`${BASE}/movie/popular?api_key=${apiKey}&page=${i + 1}`).then(r => r.json())
+    )),
+    Promise.all(Array.from({ length: 10 }, (_, i) =>
+      fetch(`${BASE}/movie/now_playing?api_key=${apiKey}&page=${i + 1}`).then(r => r.json())
+    )),
+    // Action blockbusters
+    Promise.all(Array.from({ length: 10 }, (_, i) =>
+      fetch(`${BASE}/discover/movie?api_key=${apiKey}&with_genres=28&sort_by=popularity.desc&page=${i + 1}`).then(r => r.json())
+    )),
+    // Dramas
+    Promise.all(Array.from({ length: 10 }, (_, i) =>
+      fetch(`${BASE}/discover/movie?api_key=${apiKey}&with_genres=18&sort_by=popularity.desc&page=${i + 1}`).then(r => r.json())
+    )),
+    // Thrillers
+    Promise.all(Array.from({ length: 10 }, (_, i) =>
+      fetch(`${BASE}/discover/movie?api_key=${apiKey}&with_genres=53&sort_by=popularity.desc&page=${i + 1}`).then(r => r.json())
+    )),
+  ]);
+
+  const allFilms = [
+    ...topRatedPages,
+    ...popularPages,
+    ...nowPlayingPages,
+    ...discoverActionPages,
+    ...discoverDramaPages,
+    ...discoverThrillerPages,
+  ].flatMap(p => p.results || []);
+
+  // Deduplicate by id
+  const seen = new Set();
+  const unique = allFilms.filter(m => {
+    if (seen.has(m.id)) return false;
+    seen.add(m.id);
+    return true;
+  });
+
+  return unique
     .filter(m =>
       m.vote_count >= MIN_VOTES &&
       m.original_language === 'en' &&
@@ -84,9 +118,8 @@ export default async function handler(req, res) {
     const date = req.query.date || new Date().toISOString().slice(0, 10);
     const dayNum = getDayNumber(date);
 
-    // Shuffle the pool with a fixed seed so order is always the same,
-    // then pick by day number — wraps around only after every film has been used
-    const shuffled = seededShuffle(pool, 42);
+    // Fresh shuffle with new seed (99)
+    const shuffled = seededShuffle(pool, 99);
     const filmId = shuffled[dayNum % shuffled.length];
 
     const film = await fetchFilmData(API_KEY, filmId);
