@@ -53,6 +53,7 @@ async function fetchFilmData(apiKey, filmId) {
     imdb: details.vote_average?.toFixed(1) || 'N/A',
     genre: details.genres?.slice(0, 2).map(g => g.name).join(' / ') || 'N/A',
     director: director?.name || 'N/A',
+    boxoffice: details.revenue ? '$'+details.revenue.toLocaleString('en-US') : 'N/A',
     runtime: details.runtime ? `${details.runtime} min` : 'N/A',
     cast,
   };
