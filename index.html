@@ -15,7 +15,7 @@
     --purple:#7c3aed;--purple-light:#ede9fe;
     --radius:16px;--radius-sm:10px;--radius-pill:999px;
     --shadow:0 2px 12px rgba(0,0,0,0.08);--shadow-lg:0 8px 32px rgba(0,0,0,0.12);
-    --transition:0.2s cubic-bezier(0.4,0,0.2,1);
+    --tr:0.2s cubic-bezier(0.4,0,0.2,1);
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-bottom:48px}
@@ -25,20 +25,20 @@
   .logo-text{font-size:1.3rem;font-weight:700;letter-spacing:-0.02em;color:var(--text)}
   .logo-text span{color:var(--gold)}
   .header-right{display:flex;gap:8px;align-items:center}
-  .icon-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:none;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:transform var(--transition)}
+  .icon-btn{width:36px;height:36px;border-radius:var(--radius-sm);border:none;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:transform var(--tr)}
   .icon-btn:hover{transform:scale(1.05)}
-  .streak-pill{background:var(--gold-light);border:1.5px solid var(--gold);border-radius:var(--radius-pill);padding:4px 12px;font-size:0.78rem;font-weight:600;color:var(--gold-dark);display:flex;align-items:center;gap:4px}
-  .test-banner{width:100%;max-width:480px;margin:12px 0 0;background:#faf0ff;border:1.5px solid #c084fc;border-radius:var(--radius-sm);padding:10px 14px;font-size:0.75rem;color:#7e22ce;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-  .test-controls{display:flex;gap:6px}
-  .test-btn{background:#fff;border:1px solid #c084fc;color:#7e22ce;font-size:0.72rem;padding:3px 10px;border-radius:var(--radius-pill);cursor:pointer;font-weight:500}
-  .test-btn:hover{background:#c084fc;color:#fff}
+  .streak-pill{background:var(--gold-light);border:1.5px solid var(--gold);border-radius:var(--radius-pill);padding:4px 12px;font-size:0.78rem;font-weight:600;color:var(--gold-dark);display:flex;align-items:center;gap:4px;cursor:pointer}
   .main{width:100%;max-width:480px;padding:16px}
   .card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:14px}
+
+  /* MODE TOGGLE */
   .mode-toggle{display:flex;background:var(--bg);border-radius:var(--radius-pill);padding:4px;gap:4px;margin-bottom:16px}
-  .mode-opt{flex:1;padding:8px;border:none;background:transparent;border-radius:var(--radius-pill);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all var(--transition);color:var(--text2)}
+  .mode-opt{flex:1;padding:8px;border:none;background:transparent;border-radius:var(--radius-pill);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all var(--tr);color:var(--text2)}
   .mode-opt.active-easy{background:var(--surface);box-shadow:var(--shadow);color:var(--gold-dark)}
   .mode-opt.active-hard{background:var(--surface);box-shadow:var(--shadow);color:var(--red)}
   .mode-opt:disabled{opacity:0.5;cursor:not-allowed}
+
+  /* CAST */
   .cast-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
   .cast-title{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3)}
   .cast-badge{font-size:0.72rem;font-weight:600;background:var(--purple-light);color:var(--purple);padding:3px 10px;border-radius:var(--radius-pill)}
@@ -50,44 +50,54 @@
   .actor-name{font-size:0.95rem;font-weight:600;color:var(--text);flex:1}
   .role-pill{font-size:0.72rem;font-weight:500;background:var(--gold-light);color:var(--gold-dark);padding:3px 10px;border-radius:var(--radius-pill);white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
   .role-hidden{font-size:0.72rem;background:#f0f0f0;color:#ccc;padding:3px 10px;border-radius:var(--radius-pill);letter-spacing:0.15em}
+
+  /* HINTS */
+  .hints-label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px}
+  .hints-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .hint-card{background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;position:relative;min-height:64px;display:flex;flex-direction:column;justify-content:center;border:1.5px solid transparent;transition:border-color var(--tr)}
+  .hint-card.used{border-color:var(--gold);background:var(--gold-light)}
+  .hint-card.wide{grid-column:span 3}
+  .hint-lbl{font-size:0.58rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px}
+  .hint-val{font-size:0.85rem;font-weight:600;color:var(--text);line-height:1.3}
+  .hint-val.locked{color:var(--text3);font-weight:400;font-style:italic;font-size:0.78rem}
+  .hint-val.tagline-val{font-size:0.8rem;font-style:italic;color:var(--text2)}
+  .hint-reveal-btn{margin-top:6px;background:var(--surface);border:1.5px solid #e5e3f0;color:var(--text2);font-size:0.68rem;font-weight:600;padding:3px 10px;border-radius:var(--radius-pill);cursor:pointer;transition:all var(--tr);white-space:nowrap;align-self:flex-start}
+  .hint-reveal-btn:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+  .hint-used-tag{font-size:0.6rem;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px}
+  .hints-note{font-size:0.72rem;color:var(--text3);text-align:center;margin-top:8px}
+
+  /* PIPS */
   .pips{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
-  .pip{width:34px;height:34px;border-radius:50%;border:2px solid #e5e3f0;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:var(--text3);background:var(--bg);transition:all var(--transition)}
+  .pip{width:34px;height:34px;border-radius:50%;border:2px solid #e5e3f0;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:var(--text3);background:var(--bg);transition:all var(--tr)}
   .pip.current{border-color:var(--gold);color:var(--gold-dark);background:var(--gold-light);transform:scale(1.1)}
   .pip.wrong{border-color:#fca5a5;color:var(--red);background:var(--red-bg)}
   .pip.correct{border-color:#86efac;color:var(--green-dark);background:var(--green-bg)}
+
+  /* INPUT */
   .input-wrap{position:relative;margin-bottom:10px}
-  #guess-input{width:100%;background:var(--bg);border:2px solid #e5e3f0;color:var(--text);font-size:1rem;padding:13px 16px;border-radius:var(--radius-sm);outline:none;transition:border-color var(--transition);font-family:inherit}
+  #guess-input{width:100%;background:var(--bg);border:2px solid #e5e3f0;color:var(--text);font-size:1rem;padding:13px 16px;border-radius:var(--radius-sm);outline:none;transition:border-color var(--tr);font-family:inherit}
   #guess-input:focus{border-color:var(--gold)}
   #guess-input::placeholder{color:var(--text3)}
   #guess-input.shake{animation:shake 0.3s ease}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
   .autocomplete{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);z-index:20;max-height:220px;overflow-y:auto;display:none;border:1px solid #f0eef8}
-  .ac-item{padding:11px 16px;cursor:pointer;font-size:0.92rem;color:var(--text2);border-bottom:1px solid var(--bg);transition:background var(--transition)}
+  .ac-item{padding:11px 16px;cursor:pointer;font-size:0.92rem;color:var(--text2);border-bottom:1px solid var(--bg);transition:background var(--tr)}
   .ac-item:last-child{border-bottom:none}
   .ac-item:hover,.ac-item.active{background:var(--gold-light);color:var(--gold-dark)}
   .ac-item.disabled{color:var(--text3);cursor:not-allowed;font-style:italic}
   .ac-item.disabled:hover{background:transparent;color:var(--text3)}
-  .btn-guess{width:100%;padding:14px;background:var(--text);border:none;color:#fff;font-size:0.95rem;font-weight:700;cursor:pointer;border-radius:var(--radius-sm);transition:all var(--transition)}
+  .btn-guess{width:100%;padding:14px;background:var(--text);border:none;color:#fff;font-size:0.95rem;font-weight:700;cursor:pointer;border-radius:var(--radius-sm);transition:all var(--tr)}
   .btn-guess:hover{background:#2d2b45;transform:translateY(-1px)}
   .toast{text-align:center;font-size:0.82rem;color:var(--text3);padding:8px;min-height:28px}
   .toast.hint-msg{color:var(--text2)}
   .toast.dupe{color:var(--red)}
   .wrong-guesses{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
   .wrong-chip{font-size:0.75rem;background:var(--red-bg);color:var(--red);padding:4px 10px;border-radius:var(--radius-pill);border:1px solid #fca5a5}
-  .hints-label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px}
-  .hints-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .hint-card{background:var(--bg);border-radius:var(--radius-sm);padding:12px;position:relative;min-height:62px;display:flex;flex-direction:column;justify-content:center;border:1.5px solid transparent;transition:border-color var(--transition)}
-  .hint-card.used{border-color:var(--gold);background:var(--gold-light)}
-  .hint-lbl{font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px}
-  .hint-val{font-size:0.9rem;font-weight:600;color:var(--text)}
-  .hint-val.locked{color:var(--text3);font-weight:400;font-style:italic;font-size:0.8rem}
-  .hint-reveal-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--surface);border:1.5px solid #e5e3f0;color:var(--text2);font-size:0.7rem;font-weight:600;padding:4px 10px;border-radius:var(--radius-pill);cursor:pointer;transition:all var(--transition);white-space:nowrap}
-  .hint-reveal-btn:hover{background:var(--gold);border-color:var(--gold);color:#fff}
-  .hint-used-tag{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:0.62rem;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:0.08em}
-  .hints-note{font-size:0.72rem;color:var(--text3);text-align:center;margin-top:8px}
   .loading{text-align:center;padding:48px 20px;color:var(--text3);font-size:0.9rem}
+
+  /* MODAL */
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:flex;align-items:flex-end;justify-content:center}
-  .modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:28px 24px 36px;width:100%;max-width:480px;animation:slideup 0.3s cubic-bezier(0.4,0,0.2,1)}
+  .modal{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:28px 24px 36px;width:100%;max-width:480px;animation:slideup 0.3s cubic-bezier(0.4,0,0.2,1);max-height:90vh;overflow-y:auto}
   @keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
   .modal-handle{width:36px;height:4px;background:#e5e3f0;border-radius:2px;margin:0 auto 20px}
   .modal h2{font-size:1.3rem;font-weight:700;margin-bottom:4px;text-align:center}
@@ -97,6 +107,24 @@
   .rule-text{font-size:0.88rem;color:var(--text2);line-height:1.5;padding-top:8px}
   .rule-text strong{color:var(--text)}
   .modal-btn{width:100%;padding:14px;background:var(--text);border:none;color:#fff;font-size:1rem;font-weight:700;border-radius:var(--radius-sm);cursor:pointer;margin-top:8px}
+
+  /* STATS MODAL */
+  .stats-section{margin-bottom:20px}
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+  .stat-cell{background:var(--bg);border-radius:var(--radius-sm);padding:12px 8px;text-align:center}
+  .stat-num{font-size:1.6rem;font-weight:800;color:var(--text);line-height:1}
+  .stat-lbl{font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-top:4px}
+  .dist-title{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px}
+  .dist-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .dist-label{font-size:0.78rem;font-weight:600;color:var(--text2);min-width:16px;text-align:right}
+  .dist-bar-wrap{flex:1;background:var(--bg);border-radius:var(--radius-pill);height:24px;overflow:hidden}
+  .dist-bar{height:100%;border-radius:var(--radius-pill);background:var(--gold);display:flex;align-items:center;padding:0 8px;transition:width 0.6s cubic-bezier(0.4,0,0.2,1);min-width:0}
+  .dist-bar.highlight{background:var(--green)}
+  .dist-count{font-size:0.72rem;font-weight:700;color:#fff;white-space:nowrap}
+  .dist-zero{font-size:0.72rem;color:var(--text3);padding-left:8px}
+  .no-stats{text-align:center;padding:24px;color:var(--text3);font-size:0.88rem}
+
+  /* RESULTS */
   #results-screen{display:none;width:100%;max-width:480px;padding:16px}
   .result-hero{text-align:center;padding:24px 0 16px}
   .result-icon{font-size:3.5rem;margin-bottom:8px;display:block;animation:popin 0.4s cubic-bezier(0.34,1.56,0.64,1)}
@@ -107,10 +135,11 @@
   .result-sub{font-size:0.85rem;color:var(--text2)}
   .film-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:14px}
   .film-name{font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:14px;text-align:center}
-  .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+  .meta-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
   .meta-cell{background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px}
-  .meta-lbl{font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:2px}
-  .meta-val{font-size:0.95rem;font-weight:600;color:var(--text)}
+  .meta-cell.wide{grid-column:span 3;font-style:italic;color:var(--text2)}
+  .meta-lbl{font-size:0.58rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:2px}
+  .meta-val{font-size:0.88rem;font-weight:600;color:var(--text)}
   .hints-summary{font-size:0.78rem;color:var(--text3);border-top:1px solid var(--bg);padding-top:10px}
   .hints-summary span{color:var(--gold-dark);font-weight:600}
   .streak-card{border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;gap:16px}
@@ -122,6 +151,8 @@
   .emoji-lbl{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:8px}
   .share-btn{width:100%;padding:14px;background:var(--text);border:none;color:#fff;font-size:0.95rem;font-weight:700;border-radius:var(--radius-sm);cursor:pointer;margin-top:4px}
   .share-copied{text-align:center;color:var(--green-dark);font-size:0.8rem;font-weight:600;height:24px;margin-top:6px}
+  .view-stats-btn{width:100%;padding:12px;background:transparent;border:2px solid #e5e3f0;color:var(--text2);font-size:0.9rem;font-weight:600;border-radius:var(--radius-sm);cursor:pointer;margin-top:8px;transition:all var(--tr)}
+  .view-stats-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
   .countdown-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;text-align:center}
   .cd-lbl{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:6px}
   .cd-timer{font-size:2rem;font-weight:800;letter-spacing:0.05em;color:var(--text)}
@@ -129,28 +160,28 @@
 </head>
 <body>
 
+<!-- HOW TO PLAY MODAL -->
 <div class="modal-bg" id="modal-bg" style="display:none">
   <div class="modal">
     <div class="modal-handle"></div>
     <h2>How to play</h2>
     <p class="subtitle">Guess the film from its cast</p>
-    <div class="rule">
-      <div class="rule-icon" style="background:#fdf3e0">🎬</div>
-      <div class="rule-text"><strong>One film per day,</strong> the same for everyone. Cast members are revealed one at a time, from a minor supporting role up to the lead.</div>
-    </div>
-    <div class="rule">
-      <div class="rule-icon" style="background:#f0fdf4">🎯</div>
-      <div class="rule-text"><strong>You have 6 guesses.</strong> Each wrong guess reveals the next cast member. Identify the film as early as you can.</div>
-    </div>
-    <div class="rule">
-      <div class="rule-icon" style="background:#ede9fe">💡</div>
-      <div class="rule-text"><strong>Hints are free</strong> — reveal the year, rating, genre, director or runtime. They'll show in your shared result.</div>
-    </div>
-    <div class="rule">
-      <div class="rule-icon" style="background:#fef2f2">🔴</div>
-      <div class="rule-text"><strong>Hard mode</strong> hides character names — actor names only.</div>
-    </div>
+    <div class="rule"><div class="rule-icon" style="background:#fdf3e0">🎬</div><div class="rule-text"><strong>One film per day,</strong> the same for everyone. Cast members are revealed from a minor supporting role up to the lead.</div></div>
+    <div class="rule"><div class="rule-icon" style="background:#f0fdf4">🎯</div><div class="rule-text"><strong>You have 6 guesses.</strong> Each wrong guess reveals the next cast member.</div></div>
+    <div class="rule"><div class="rule-icon" style="background:#ede9fe">💡</div><div class="rule-text"><strong>Hints are free</strong> — year, rating, genre, director, runtime, or tagline. They show in your shared result.</div></div>
+    <div class="rule"><div class="rule-icon" style="background:#fef2f2">🔴</div><div class="rule-text"><strong>Hard mode</strong> hides character names — actor names only.</div></div>
     <button class="modal-btn" id="modal-close-btn">Let's play</button>
+  </div>
+</div>
+
+<!-- STATS MODAL -->
+<div class="modal-bg" id="stats-modal-bg" style="display:none">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2>Your Stats</h2>
+    <p class="subtitle">Career performance</p>
+    <div id="stats-content"></div>
+    <button class="modal-btn" id="stats-close-btn">Done</button>
   </div>
 </div>
 
@@ -160,12 +191,10 @@
     <div class="logo-text">Cast<span>dle</span></div>
   </div>
   <div class="header-right">
-    <div class="streak-pill">🔥 <span id="streak-val">0</span></div>
+    <div class="streak-pill" id="streak-pill-btn">🔥 <span id="streak-val">0</span></div>
     <button class="icon-btn" id="help-btn">?</button>
   </div>
 </header>
-
-<div id="test-banner"></div>
 
 <div class="main" id="game-screen">
   <div id="loading" class="loading">Loading today's film…</div>
@@ -205,10 +234,7 @@
   </div>
   <div class="streak-card" id="streak-card">
     <div class="streak-num" id="streak-num">0</div>
-    <div class="streak-info">
-      <strong id="streak-label"></strong>
-      <small id="streak-best"></small>
-    </div>
+    <div class="streak-info"><strong id="streak-label"></strong><small id="streak-best"></small></div>
   </div>
   <div class="film-card">
     <div class="film-name" id="film-name-reveal"></div>
@@ -221,7 +247,8 @@
     <button class="share-btn" id="share-btn">Copy & Share</button>
     <div class="share-copied" id="share-copied"></div>
   </div>
-  <div class="countdown-card">
+  <button class="view-stats-btn" id="view-stats-btn">View Career Stats</button>
+  <div class="countdown-card" style="margin-top:14px">
     <div class="cd-lbl">Next Castdle in</div>
     <div class="cd-timer" id="countdown">00:00:00</div>
   </div>
@@ -229,216 +256,249 @@
 
 <script>
 // ── STORAGE ────────────────────────────────────────────────────────────────
-const Store = {
+const Store={
   get(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}},
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 };
 
 // ── CONSTANTS ──────────────────────────────────────────────────────────────
-const MAX = 6;
-const HINTS_DEF = [
-  {key:'year',    label:'Year',     fmt:f=>f.year},
-  {key:'imdb',    label:'IMDb',     fmt:f=>f.imdb+' / 10'},
-  {key:'genre',   label:'Genre',    fmt:f=>f.genre},
-  {key:'director',label:'Director', fmt:f=>f.director},
-  {key:'runtime', label:'Runtime',  fmt:f=>f.runtime},
+const MAX=6;
+const HINTS_DEF=[
+  {key:'year',     label:'Year',     fmt:f=>f.year,     wide:false},
+  {key:'imdb',     label:'IMDb',     fmt:f=>f.imdb+' / 10', wide:false},
+  {key:'genre',    label:'Genre',    fmt:f=>f.genre,    wide:false},
+  {key:'director', label:'Director', fmt:f=>f.director, wide:false},
+  {key:'runtime',  label:'Runtime',  fmt:f=>f.runtime,  wide:false},
+  {key:'boxoffice', label:'Box Office', fmt:f=>f.boxoffice, wide:true},
 ];
 
 // ── STATE ──────────────────────────────────────────────────────────────────
-let film = null;
-let allTitles = [];
-let revealedCount = 1;
-let guessNum = 0;
-let gameOver = false;
-let guessHistory = [];
-let usedGuesses = new Set();
-let hintsRevealed = new Set();
-let selectedAC = -1;
-let mode = 'easy';
+let film=null, allTitles=[];
+let revealedCount=1, guessNum=0, gameOver=false;
+let guessHistory=[], usedGuesses=new Set(), hintsRevealed=new Set();
+let selectedAC=-1, mode='easy';
 
-// ── MODAL ──────────────────────────────────────────────────────────────────
-function openModal(){ document.getElementById('modal-bg').style.display='flex'; }
-function closeModal(){ document.getElementById('modal-bg').style.display='none'; }
-document.getElementById('modal-close-btn').addEventListener('click', function(){
-  Store.set('castdle_seen', true);
-  closeModal();
+// ── MODALS ─────────────────────────────────────────────────────────────────
+document.getElementById('modal-close-btn').addEventListener('click',()=>{
+  Store.set('castdle_seen',true);
+  document.getElementById('modal-bg').style.display='none';
 });
-document.getElementById('help-btn').addEventListener('click', openModal);
+document.getElementById('help-btn').addEventListener('click',()=>{
+  document.getElementById('modal-bg').style.display='flex';
+});
+document.getElementById('stats-close-btn').addEventListener('click',()=>{
+  document.getElementById('stats-modal-bg').style.display='none';
+});
+document.getElementById('streak-pill-btn').addEventListener('click',openStats);
+document.getElementById('view-stats-btn').addEventListener('click',openStats);
 
-// ── STREAK ─────────────────────────────────────────────────────────────────
-function getStreak(){ return Store.get('castdle_streak') || {current:0, best:0, lastWin:''}; }
-function saveStreak(s){ Store.set('castdle_streak', s); }
-function updateStreak(won){
-  const s = getStreak();
-  const today = new Date().toDateString();
-  const yesterday = new Date(Date.now()-86400000).toDateString();
+// ── STATS ──────────────────────────────────────────────────────────────────
+function getStats(){
+  return Store.get('castdle_stats')||{
+    played:0, won:0, currentStreak:0, bestStreak:0,
+    lastPlayed:'', lastWon:'',
+    distribution:{1:0,2:0,3:0,4:0,5:0,6:0}
+  };
+}
+function saveStats(s){Store.set('castdle_stats',s);}
+
+function recordResult(won, guesses){
+  const s=getStats();
+  const today=new Date().toDateString();
+  if(s.lastPlayed===today) return s; // already recorded today
+  s.played++;
   if(won){
-    s.current = s.lastWin === yesterday ? s.current + 1 : 1;
-    s.lastWin = today;
-    s.best = Math.max(s.best, s.current);
+    s.won++;
+    s.currentStreak=s.lastWon===new Date(Date.now()-86400000).toDateString()?s.currentStreak+1:1;
+    s.bestStreak=Math.max(s.bestStreak,s.currentStreak);
+    s.lastWon=today;
+    s.distribution[guesses]=(s.distribution[guesses]||0)+1;
   } else {
-    s.current = 0;
+    s.currentStreak=0;
   }
-  saveStreak(s);
+  s.lastPlayed=today;
+  saveStats(s);
   return s;
 }
+
 function renderStreakPill(){
-  document.getElementById('streak-val').textContent = getStreak().current;
+  document.getElementById('streak-val').textContent=getStats().currentStreak;
+}
+
+function openStats(){
+  const s=getStats();
+  const solveRate=s.played>0?Math.round((s.won/s.played)*100):0;
+  const avgGuesses=()=>{
+    let total=0,count=0;
+    for(let i=1;i<=6;i++){total+=i*(s.distribution[i]||0);count+=(s.distribution[i]||0);}
+    return count>0?(total/count).toFixed(1):'—';
+  };
+  const maxDist=Math.max(...Object.values(s.distribution),1);
+
+  let distHTML='';
+  for(let i=1;i<=6;i++){
+    const count=s.distribution[i]||0;
+    const pct=Math.round((count/maxDist)*100);
+    distHTML+=`<div class="dist-row">
+      <div class="dist-label">${i}</div>
+      <div class="dist-bar-wrap">
+        ${count>0
+          ?`<div class="dist-bar${i===guessNum&&gameOver&&guessHistory[guessNum-1]?.correct?' highlight':''}" style="width:${Math.max(pct,8)}%"><span class="dist-count">${count}</span></div>`
+          :`</div><span class="dist-zero">0`
+        }
+      </span></div>
+    </div>`;
+  }
+
+  document.getElementById('stats-content').innerHTML=`
+    <div class="stats-section">
+      <div class="stats-row">
+        <div class="stat-cell"><div class="stat-num">${s.played}</div><div class="stat-lbl">Played</div></div>
+        <div class="stat-cell"><div class="stat-num">${solveRate}%</div><div class="stat-lbl">Solve rate</div></div>
+        <div class="stat-cell"><div class="stat-num">${s.currentStreak}</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-cell"><div class="stat-num">${s.bestStreak}</div><div class="stat-lbl">Best</div></div>
+      </div>
+      <div class="stats-row" style="grid-template-columns:1fr 1fr">
+        <div class="stat-cell"><div class="stat-num">${s.won}</div><div class="stat-lbl">Films solved</div></div>
+        <div class="stat-cell"><div class="stat-num">${avgGuesses()}</div><div class="stat-lbl">Avg guesses</div></div>
+      </div>
+    </div>
+    <div class="stats-section">
+      <div class="dist-title">Guess distribution</div>
+      ${s.played===0?'<div class="no-stats">Play your first game to see stats</div>':distHTML}
+    </div>`;
+
+  document.getElementById('stats-modal-bg').style.display='flex';
 }
 
 // ── LOAD FILM ──────────────────────────────────────────────────────────────
 async function loadFilm(){
-  const today = new Date().toISOString().slice(0,10);
-  const res = await fetch('/api/film?date='+today);
+  const today=new Date().toISOString().slice(0,10);
+  const res=await fetch('/api/film?date='+today);
   if(!res.ok) throw new Error('API returned '+res.status);
-  film = await res.json();
-  if(!film.cast || film.cast.length === 0) throw new Error('No cast data returned');
+  film=await res.json();
+  if(!film.cast||film.cast.length===0) throw new Error('No cast data returned');
 }
 
 async function loadTitles(){
-  try {
-    const res = await fetch('/api/titles');
-    if(res.ok) allTitles = await res.json();
-  } catch(e){}
-  if(!allTitles.includes(film.title)) allTitles.push(film.title);
+  try{const res=await fetch('/api/titles');if(res.ok)allTitles=await res.json();}catch(e){}
+  if(!allTitles.includes(film.title))allTitles.push(film.title);
 }
 
-// ── INIT ───────────────────────────────────────────────────────────────────
+// ── BOOT ───────────────────────────────────────────────────────────────────
 async function boot(){
-  try {
-    await loadFilm();
-    loadTitles(); // non-blocking
-  } catch(e){
-    document.getElementById('loading').innerHTML =
+  try{await loadFilm();loadTitles();}
+  catch(e){
+    document.getElementById('loading').innerHTML=
       '<div style="color:#ef4444">Failed to load today\'s film.<br><small>'+e.message+'</small></div>';
     return;
   }
-
-  revealedCount=1; guessNum=0; gameOver=false;
-  guessHistory=[]; usedGuesses=new Set(); hintsRevealed=new Set(); selectedAC=-1;
+  revealedCount=1;guessNum=0;gameOver=false;
+  guessHistory=[];usedGuesses=new Set();hintsRevealed=new Set();selectedAC=-1;
   document.getElementById('wrong-guesses').innerHTML='';
   document.getElementById('cast-list').innerHTML='';
   document.getElementById('toast').textContent='';
-
   renderStreakPill();
   setMode('easy');
   renderHints();
   renderPips();
-
   document.getElementById('loading').style.display='none';
   document.getElementById('game-inner').style.display='block';
-
-  if(!Store.get('castdle_seen')) openModal();
+  if(!Store.get('castdle_seen'))document.getElementById('modal-bg').style.display='flex';
 }
 
 // ── MODE ───────────────────────────────────────────────────────────────────
 function setMode(m){
-  mode = m;
+  mode=m;
   document.getElementById('btn-easy').className='mode-opt'+(m==='easy'?' active-easy':'');
   document.getElementById('btn-hard').className='mode-opt'+(m==='hard'?' active-hard':'');
-  // Re-render cast in place (update role pills without re-flipping)
-  const items = document.getElementById('cast-list').querySelectorAll('.cast-face');
-  items.forEach((face, i) => {
-    const c = film.cast[i];
-    if(!c) return;
-    const roleEl = m==='easy'
-      ? `<span class="role-pill">${c.role}</span>`
-      : `<span class="role-hidden">&#9608;&#9608;&#9608;&#9608;</span>`;
-    face.innerHTML = `<span class="cast-num">${i+1}</span><span class="actor-name">${c.name}</span>${roleEl}`;
+  const items=document.getElementById('cast-list').querySelectorAll('.cast-face');
+  items.forEach((face,i)=>{
+    const c=film.cast[i]; if(!c)return;
+    face.innerHTML=`<span class="cast-num">${i+1}</span><span class="actor-name">${c.name}</span>`+
+      (m==='easy'?`<span class="role-pill">${c.role}</span>`:`<span class="role-hidden">&#9608;&#9608;&#9608;&#9608;</span>`);
   });
-  // If no cards yet, do first render
-  if(items.length === 0) addCastCard(0);
+  if(items.length===0)addCastCard(0);
 }
-
-document.getElementById('btn-easy').addEventListener('click', ()=>{
-  if(gameOver || guessNum > 0) return;
-  setMode('easy');
-});
-document.getElementById('btn-hard').addEventListener('click', ()=>{
-  if(gameOver || guessNum > 0) return;
-  setMode('hard');
-});
+document.getElementById('btn-easy').addEventListener('click',()=>{if(gameOver||guessNum>0)return;setMode('easy');});
+document.getElementById('btn-hard').addEventListener('click',()=>{if(gameOver||guessNum>0)return;setMode('hard');});
 
 // ── CAST CARDS ─────────────────────────────────────────────────────────────
 function addCastCard(i){
-  const c = film.cast[i];
-  if(!c) return;
-  const wrap = document.createElement('div'); wrap.className='cast-item';
-  const inner = document.createElement('div'); inner.className='cast-inner';
-  const face = document.createElement('div'); face.className='cast-face';
-  const roleEl = mode==='easy'
-    ? `<span class="role-pill">${c.role}</span>`
-    : `<span class="role-hidden">&#9608;&#9608;&#9608;&#9608;</span>`;
-  face.innerHTML=`<span class="cast-num">${i+1}</span><span class="actor-name">${c.name}</span>${roleEl}`;
-  inner.appendChild(face);
-  wrap.appendChild(inner);
+  const c=film.cast[i]; if(!c)return;
+  const wrap=document.createElement('div');wrap.className='cast-item';
+  const inner=document.createElement('div');inner.className='cast-inner';
+  const face=document.createElement('div');face.className='cast-face';
+  face.innerHTML=`<span class="cast-num">${i+1}</span><span class="actor-name">${c.name}</span>`+
+    (mode==='easy'?`<span class="role-pill">${c.role}</span>`:`<span class="role-hidden">&#9608;&#9608;&#9608;&#9608;</span>`);
+  inner.appendChild(face);wrap.appendChild(inner);
   document.getElementById('cast-list').appendChild(wrap);
-  requestAnimationFrame(()=>{ setTimeout(()=>inner.classList.add('flipped'), 60); });
+  requestAnimationFrame(()=>setTimeout(()=>inner.classList.add('flipped'),60));
   document.getElementById('cast-badge').textContent=`Clue ${i+1} of ${MAX}`;
 }
 
 // ── HINTS ──────────────────────────────────────────────────────────────────
 function renderHints(){
-  const grid = document.getElementById('hints-grid'); grid.innerHTML='';
+  const grid=document.getElementById('hints-grid');grid.innerHTML='';
   HINTS_DEF.forEach(h=>{
-    const used = hintsRevealed.has(h.key);
-    const card = document.createElement('div'); card.className='hint-card'+(used?' used':'');
-    card.innerHTML = used
-      ? `<div class="hint-lbl">${h.label}</div><div class="hint-val">${h.fmt(film)}</div><span class="hint-used-tag">✓</span>`
-      : `<div class="hint-lbl">${h.label}</div><div class="hint-val locked">tap to reveal</div><button class="hint-reveal-btn" data-key="${h.key}">Reveal</button>`;
+    const used=hintsRevealed.has(h.key);
+    const card=document.createElement('div');
+    card.className='hint-card'+(used?' used':'')+(h.wide?' wide':'');
+    if(used){
+      const isTagline=h.key==='tagline';
+      card.innerHTML=`<div class="hint-lbl">${h.label}</div><div class="hint-val${isTagline?' tagline-val':''}">${h.fmt(film)}</div><div class="hint-used-tag">✓ revealed</div>`;
+    } else {
+      card.innerHTML=`<div class="hint-lbl">${h.label}</div><div class="hint-val locked">${h.wide?'"…"':'—'}</div><button class="hint-reveal-btn" data-key="${h.key}">Reveal</button>`;
+    }
     grid.appendChild(card);
   });
   grid.querySelectorAll('.hint-reveal-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>revealHint(btn.dataset.key));
+    btn.addEventListener('click',()=>revealHint(btn.dataset.key));
   });
 }
 
 function revealHint(key){
-  if(gameOver) return;
-  hintsRevealed.add(key); renderHints();
-  const h = HINTS_DEF.find(x=>x.key===key);
-  showToast(h.label+': '+h.fmt(film), 'hint-msg');
+  if(gameOver)return;
+  hintsRevealed.add(key);renderHints();
+  const h=HINTS_DEF.find(x=>x.key===key);
+  showToast(h.label+': '+h.fmt(film),'hint-msg');
 }
 
 // ── PIPS ───────────────────────────────────────────────────────────────────
 function renderPips(){
-  const t = document.getElementById('pips'); t.innerHTML='';
+  const t=document.getElementById('pips');t.innerHTML='';
   for(let i=0;i<MAX;i++){
-    const d=document.createElement('div'); d.className='pip';
+    const d=document.createElement('div');d.className='pip';
     if(i<guessNum){
       if(guessHistory[i]?.correct){d.classList.add('correct');d.textContent='★';}
       else{d.classList.add('wrong');d.textContent='✕';}
-    } else if(i===guessNum&&!gameOver){
-      d.classList.add('current');d.textContent=i+1;
-    } else { d.textContent=i+1; }
+    }else if(i===guessNum&&!gameOver){d.classList.add('current');d.textContent=i+1;}
+    else{d.textContent=i+1;}
     t.appendChild(d);
   }
 }
 
-// ── WRONG GUESSES ──────────────────────────────────────────────────────────
 function renderWrong(){
-  const el=document.getElementById('wrong-guesses'); el.innerHTML='';
+  const el=document.getElementById('wrong-guesses');el.innerHTML='';
   guessHistory.filter(g=>!g.correct).forEach(g=>{
-    const d=document.createElement('div'); d.className='wrong-chip'; d.textContent=g.title; el.appendChild(d);
+    const d=document.createElement('div');d.className='wrong-chip';d.textContent=g.title;el.appendChild(d);
   });
 }
 
-// ── TOAST ──────────────────────────────────────────────────────────────────
 function showToast(msg,type=''){
-  const t=document.getElementById('toast'); t.textContent=msg; t.className='toast'+(type?' '+type:'');
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(type?' '+type:'');
 }
 
 // ── AUTOCOMPLETE ───────────────────────────────────────────────────────────
 function fuzzyMatch(str,q){
-  str=str.toLowerCase(); q=q.toLowerCase();
-  if(str.includes(q)) return true;
+  str=str.toLowerCase();q=q.toLowerCase();
+  if(str.includes(q))return true;
   let si=0;
-  for(let qi=0;qi<q.length;qi++){ si=str.indexOf(q[qi],si); if(si===-1)return false; si++; }
+  for(let qi=0;qi<q.length;qi++){si=str.indexOf(q[qi],si);if(si===-1)return false;si++;}
   return true;
 }
-
 function updateAC(val){
-  const ac=document.getElementById('autocomplete'); selectedAC=-1;
+  const ac=document.getElementById('autocomplete');selectedAC=-1;
   if(!val||val.length<2){ac.style.display='none';return;}
   const matches=allTitles.filter(t=>fuzzyMatch(t,val));
   if(!matches.length){ac.style.display='none';return;}
@@ -448,14 +508,12 @@ function updateAC(val){
     const d=document.createElement('div');
     d.className='ac-item'+(already?' disabled':'');
     d.textContent=m+(already?' (already guessed)':'');
-    if(!already) d.addEventListener('mousedown',e=>{e.preventDefault();selectG(m);});
+    if(!already)d.addEventListener('mousedown',e=>{e.preventDefault();selectG(m);});
     ac.appendChild(d);
   });
   ac.style.display='block';
 }
-
-function selectG(t){ document.getElementById('guess-input').value=t; document.getElementById('autocomplete').style.display='none'; }
-
+function selectG(t){document.getElementById('guess-input').value=t;document.getElementById('autocomplete').style.display='none';}
 const inp=document.getElementById('guess-input');
 inp.addEventListener('input',e=>updateAC(e.target.value));
 inp.addEventListener('blur',()=>setTimeout(()=>{document.getElementById('autocomplete').style.display='none';},150));
@@ -464,13 +522,13 @@ inp.addEventListener('keydown',e=>{
   const items=[...ac.querySelectorAll('.ac-item:not(.disabled)')];
   if(e.key==='ArrowDown'){selectedAC=Math.min(selectedAC+1,items.length-1);ac.querySelectorAll('.ac-item').forEach((x,i)=>x.classList.toggle('active',i===selectedAC));}
   else if(e.key==='ArrowUp'){selectedAC=Math.max(selectedAC-1,0);ac.querySelectorAll('.ac-item').forEach((x,i)=>x.classList.toggle('active',i===selectedAC));}
-  else if(e.key==='Enter'){ selectedAC>=0&&items[selectedAC]?selectG(items[selectedAC].textContent):submitGuess(); }
+  else if(e.key==='Enter'){selectedAC>=0&&items[selectedAC]?selectG(items[selectedAC].textContent):submitGuess();}
 });
 document.getElementById('btn-guess').addEventListener('click',submitGuess);
 
 // ── GUESS ──────────────────────────────────────────────────────────────────
 function submitGuess(){
-  if(gameOver||!film) return;
+  if(gameOver||!film)return;
   const val=inp.value.trim();
   if(!val){showToast('Type a film title first.');return;}
   if(usedGuesses.has(val.toLowerCase())){
@@ -483,14 +541,14 @@ function submitGuess(){
   const correct=val.toLowerCase()===film.title.toLowerCase();
   guessHistory.push({title:val,correct});
   guessNum++;
-  if(correct){ gameOver=true; renderPips(); showResults(true); }
-  else if(guessNum>=MAX){ gameOver=true; renderPips(); showResults(false); }
-  else {
-    if(revealedCount<film.cast.length){ revealedCount++; addCastCard(revealedCount-1); }
-    renderPips(); renderWrong();
+  if(correct){gameOver=true;renderPips();showResults(true);}
+  else if(guessNum>=MAX){gameOver=true;renderPips();showResults(false);}
+  else{
+    if(revealedCount<film.cast.length){revealedCount++;addCastCard(revealedCount-1);}
+    renderPips();renderWrong();
     showToast('Not quite — next cast member revealed.','hint-msg');
   }
-  inp.value=''; document.getElementById('autocomplete').style.display='none';
+  inp.value='';document.getElementById('autocomplete').style.display='none';
 }
 
 // ── RESULTS ────────────────────────────────────────────────────────────────
@@ -504,24 +562,29 @@ function showResults(won){
   document.getElementById('result-sub').textContent=
     (mode==='hard'?'Hard mode':'Easy mode')+' · '+
     new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  const s=updateStreak(won); renderStreakPill();
-  document.getElementById('streak-num').textContent=s.current;
+
+  const s=recordResult(won,guessNum);
+  renderStreakPill();
+  document.getElementById('streak-num').textContent=s.currentStreak;
   document.getElementById('streak-num').style.color=won?'var(--gold-dark)':'var(--red)';
-  document.getElementById('streak-label').textContent=won?`🔥 ${s.current} day streak!`:'Streak reset';
-  document.getElementById('streak-best').textContent=`Best: ${s.best} day${s.best!==1?'s':''}`;
+  document.getElementById('streak-label').textContent=won?`🔥 ${s.currentStreak} day streak!`:'Streak reset';
+  document.getElementById('streak-best').textContent=`Best: ${s.bestStreak} day${s.bestStreak!==1?'s':''}`;
   const sc=document.getElementById('streak-card');
   sc.style.background=won?'var(--gold-light)':'var(--red-bg)';
   sc.style.border=won?'1.5px solid var(--gold)':'1.5px solid #fca5a5';
+
   document.getElementById('film-name-reveal').textContent=film.title;
-  const mg=document.getElementById('meta-grid'); mg.innerHTML='';
+  const mg=document.getElementById('meta-grid');mg.innerHTML='';
   HINTS_DEF.forEach(h=>{
-    const c=document.createElement('div'); c.className='meta-cell';
+    const c=document.createElement('div');
+    c.className='meta-cell'+(h.wide?' wide':'');
     c.innerHTML=`<div class="meta-lbl">${h.label}</div><div class="meta-val">${h.fmt(film)}</div>`;
     mg.appendChild(c);
   });
   document.getElementById('hints-summary').innerHTML=hintsRevealed.size>0
     ?`Hints used: <span>${[...hintsRevealed].map(k=>HINTS_DEF.find(h=>h.key===k).label).join(', ')}</span>`
     :'No hints used ✨';
+
   const modeTag=mode==='hard'?'🔴':'🟡';
   const hintTag=hintsRevealed.size>0?` 💡×${hintsRevealed.size}`:'';
   const emojis=guessHistory.map(g=>g.correct?'🎬':'🎭').join('');
@@ -529,7 +592,7 @@ function showResults(won){
   const shareText=`CASTDLE ${modeTag}${hintTag}\n${new Date().toLocaleDateString('en-GB')}\n${won?guessNum+'/'+MAX:'X/'+MAX}\n\n${emojis}\n\ncastdle.vercel.app`;
   document.getElementById('share-btn').onclick=()=>{
     navigator.clipboard.writeText(shareText).then(()=>{
-      const el=document.getElementById('share-copied'); el.textContent='Copied! 🎉';
+      const el=document.getElementById('share-copied');el.textContent='Copied! 🎉';
       setTimeout(()=>{el.textContent='';},2000);
     });
   };
@@ -549,7 +612,6 @@ function startCountdown(){
   update();setInterval(update,1000);
 }
 
-// ── BOOT ───────────────────────────────────────────────────────────────────
 boot();
 </script>
 </body>
