@@ -348,7 +348,7 @@ function init(idx){
   document.getElementById('btn-hard').disabled=false;
   document.getElementById('cast-list').innerHTML='';
   renderStreakPill();
-  setMode('easy');
+  setMode('easy', true);
   renderHints();
   renderPips();
   if(TEST)renderTestBanner();
@@ -362,8 +362,8 @@ function testNav(d){testIndex=(testIndex+d+FILMS.length)%FILMS.length;init(testI
 function testRandom(){testIndex=Math.floor(Math.random()*FILMS.length);init(testIndex);}
 
 // ── RENDER ─────────────────────────────────────────────────────────────────
-function setMode(m){
-  if(gameOver||guessNum>0)return;
+function setMode(m, force=false){
+  if(!force && (gameOver||guessNum>0))return;
   mode=m;
   document.getElementById('btn-easy').className='mode-opt'+(m==='easy'?' active-easy':'');
   document.getElementById('btn-hard').className='mode-opt'+(m==='hard'?' active-hard':'');
