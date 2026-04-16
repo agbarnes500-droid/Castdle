@@ -1,10 +1,9 @@
-// api/pool.js
-// TEMPORARY — delete this file once you've verified the pool
-// Visit /api/pool on your site to see the full list of films
+// api/pool.js — TEMPORARY debug endpoint, delete after verifying
+// Visit /api/pool on your site to inspect the full film pool
 
 const BASE = 'https://api.themoviedb.org/3';
-const MIN_VOTES = 5000;
-const PAGES_TO_FETCH = 15;
+const MIN_VOTES = 1000;
+const PAGES_TO_FETCH = 25;
 
 function seededShuffle(arr, seed) {
   const a = [...arr];
@@ -23,16 +22,30 @@ export default async function handler(req, res) {
   if (!API_KEY) return res.status(500).json({ error: 'No API key' });
 
   try {
-    const [topRatedPages, popularPages] = await Promise.all([
+    const [topRatedPages, popularPages, nowPlayingPages, discoverActionPages, discoverDramaPages, discoverThrillerPages] = await Promise.all([
       Promise.all(Array.from({ length: PAGES_TO_FETCH }, (_, i) =>
         fetch(`${BASE}/movie/top_rated?api_key=${API_KEY}&page=${i + 1}`).then(r => r.json())
       )),
       Promise.all(Array.from({ length: PAGES_TO_FETCH }, (_, i) =>
         fetch(`${BASE}/movie/popular?api_key=${API_KEY}&page=${i + 1}`).then(r => r.json())
       )),
+      Promise.all(Array.from({ length: 10 }, (_, i) =>
+        fetch(`${BASE}/movie/now_playing?api_key=${API_KEY}&page=${i + 1}`).then(r => r.json())
+      )),
+      Promise.all(Array.from({ length: 10 }, (_, i) =>
+        fetch(`${BASE}/discover/movie?api_key=${API_KEY}&with_genres=28&sort_by=popularity.desc&page=${i + 1}`).then(r => r.json())
+      )),
+      Promise.all(Array.from({ length: 10 }, (_, i) =>
+        fetch(`${BASE}/discover/movie?api_key=${API_KEY}&with_genres=18&sort_by=popularity.desc&page=${i + 1}`).then(r => r.json())
+      )),
+      Promise.all(Array.from({ length: 10 }, (_, i) =>
+        fetch(`${BASE}/discover/movie?api_key=${API_KEY}&with_genres=53&sort_by=popularity.desc&page=${i + 1}`).then(r => r.json())
+      )),
     ]);
 
-    const allFilms = [...topRatedPages, ...popularPages].flatMap(p => p.results || []);
+    const allFilms = [...topRatedPages, ...popularPages, ...nowPlayingPages, ...discoverActionPages, ...discoverDramaPages, ...discoverThrillerPages]
+      .flatMap(p => p.results || []);
+
     const seen = new Set();
     const unique = allFilms.filter(m => {
       if (seen.has(m.id)) return false;
@@ -46,13 +59,8 @@ export default async function handler(req, res) {
       !m.genre_ids.includes(16)
     );
 
-    const shuffled = seededShuffle(pool.map(m => m.id), 42);
-
-    // Fetch titles for all IDs so you can read the list
-    const titles = pool.reduce((acc, m) => {
-      acc[m.id] = m.title;
-      return acc;
-    }, {});
+    const shuffled = seededShuffle(pool.map(m => m.id), 99);
+    const titles = pool.reduce((acc, m) => { acc[m.id] = m.title; return acc; }, {});
 
     const epoch = new Date('2025-01-01');
     const today = new Date();
@@ -62,12 +70,14 @@ export default async function handler(req, res) {
       totalFilms: pool.length,
       daysUntilRepeat: pool.length,
       todayDayNumber: dayNum,
-      todayFilmId: shuffled[dayNum % shuffled.length],
       todayFilmTitle: titles[shuffled[dayNum % shuffled.length]],
+      next7Days: Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(today.getTime() + i * 86400000).toISOString().slice(0, 10),
+        title: titles[shuffled[(dayNum + i) % shuffled.length]],
+      })),
       fullSchedule: shuffled.map((id, i) => ({
         day: i,
         date: new Date(epoch.getTime() + i * 86400000).toISOString().slice(0, 10),
-        id,
         title: titles[id] || 'Unknown',
       })),
     });
