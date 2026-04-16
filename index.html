@@ -558,8 +558,6 @@ function submitGuess(){
     inp.classList.remove('shake');void inp.offsetWidth;inp.classList.add('shake');
     showToast('Already guessed that!','dupe');return;
   }
-  document.getElementById('btn-easy').disabled=true;
-  document.getElementById('btn-hard').disabled=true;
   usedGuesses.add(val.toLowerCase());
   const correct=val.toLowerCase()===film.title.toLowerCase();
   guessHistory.push({title:val,correct});
