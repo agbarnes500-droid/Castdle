@@ -19,10 +19,11 @@ async function buildFilmPool(apiKey) {
   return pages
     .flatMap(p => p.results || [])
     .filter(m =>
-      m.vote_count >= MIN_VOTES &&
-      m.vote_average >= MIN_RATING &&
-      m.original_language === 'en' // English-language only — cast names will be recognisable
-    )
+  m.vote_count >= MIN_VOTES &&
+  m.vote_average >= MIN_RATING &&
+  m.original_language === 'en' &&
+  !m.genre_ids.includes(16)
+)
     .map(m => m.id);
 }
 
@@ -35,13 +36,11 @@ async function fetchFilmData(apiKey, filmId) {
   const credits = await creditsRes.json();
 
   // Build cast ordered least → most famous (reverse billing order)
-  const cast = credits.cast
-    .filter(a =>
-      a.known_for_department === 'Acting' &&
-      a.character &&
-      !a.character.toLowerCase().includes('uncredited') &&
-      !a.character.includes('(')
-    )
+ const cast = credits.cast
+  .filter(a =>
+    a.character &&
+    !a.character.toLowerCase().includes('uncredited')
+  )
     .slice(0, 6)
     .reverse()
     .map(a => ({ name: a.name, role: a.character }));
