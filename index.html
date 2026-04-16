@@ -323,9 +323,16 @@ function renderStreakPill(){
 // ── MODAL ──────────────────────────────────────────────────────────────────
 function openModal(){document.getElementById('modal-bg').style.display='flex';}
 function closeModal(){document.getElementById('modal-bg').style.display='none';}
-if(!Store.get('castdle_seen')){openModal();Store.set('castdle_seen',true);}
-else{document.getElementById('modal-bg').style.display='none';}
+if(!Store.get('castdle_seen')){
+  openModal();
+} else {
+  document.getElementById('modal-bg').style.display='none';
+}
 
+function closeModal(){
+  Store.set('castdle_seen', true);
+  document.getElementById('modal-bg').style.display='none';
+}
 // ── INIT ───────────────────────────────────────────────────────────────────
 function init(idx){
   film=FILMS[idx]; revealedCount=1; guessNum=0; gameOver=false;
