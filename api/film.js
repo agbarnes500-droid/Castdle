@@ -1,54 +1,84 @@
 // api/film.js
 // Vercel serverless function — keeps your TMDB key server-side
+// Film pool is built dynamically from TMDB's top-rated list — no manual curation needed
 
-const FILM_POOL = [
-  278, 238, 240, 424, 389, 680, 13, 769, 155, 497,
-  550, 11, 1891, 120, 121, 122, 105, 85, 174, 539,
-  597, 77, 807, 562, 197, 786, 244786, 76341, 419430, 581389,
-  530915, 490132, 399055, 334533, 857, 598, 761, 1366, 289, 745,
-];
+const BASE = 'https://api.themoviedb.org/3';
+
+// Quality filters — tweak these to adjust difficulty/variety
+const MIN_VOTES = 5000;   // ensures the film is well-known enough
+const MIN_RATING = 7.0;   // keeps quality high
+const PAGES_TO_FETCH = 10; // 10 pages = up to 200 films in the pool
+
+async function buildFilmPool(apiKey) {
+  const pages = await Promise.all(
+    Array.from({ length: PAGES_TO_FETCH }, (_, i) =>
+      fetch(`${BASE}/movie/top_rated?api_key=${apiKey}&page=${i + 1}`)
+        .then(r => r.json())
+    )
+  );
+  return pages
+    .flatMap(p => p.results || [])
+    .filter(m =>
+      m.vote_count >= MIN_VOTES &&
+      m.vote_average >= MIN_RATING &&
+      m.original_language === 'en' // English-language only — cast names will be recognisable
+    )
+    .map(m => m.id);
+}
+
+async function fetchFilmData(apiKey, filmId) {
+  const [detailsRes, creditsRes] = await Promise.all([
+    fetch(`${BASE}/movie/${filmId}?api_key=${apiKey}`),
+    fetch(`${BASE}/movie/${filmId}/credits?api_key=${apiKey}`),
+  ]);
+  const details = await detailsRes.json();
+  const credits = await creditsRes.json();
+
+  // Build cast ordered least → most famous (reverse billing order)
+  const cast = credits.cast
+    .filter(a =>
+      a.known_for_department === 'Acting' &&
+      a.character &&
+      !a.character.toLowerCase().includes('uncredited') &&
+      !a.character.includes('(')
+    )
+    .slice(0, 6)
+    .reverse()
+    .map(a => ({ name: a.name, role: a.character }));
+
+  const director = credits.crew.find(c => c.job === 'Director');
+
+  return {
+    title: details.title,
+    year: details.release_date?.slice(0, 4) || 'N/A',
+    imdb: details.vote_average?.toFixed(1) || 'N/A',
+    genre: details.genres?.slice(0, 2).map(g => g.name).join(' / ') || 'N/A',
+    director: director?.name || 'N/A',
+    runtime: details.runtime ? `${details.runtime} min` : 'N/A',
+    cast,
+  };
+}
 
 export default async function handler(req, res) {
-  // Allow requests from your site only (update this once you have a domain)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const API_KEY = process.env.TMDB_API_KEY;
   if (!API_KEY) return res.status(500).json({ error: 'API key not configured' });
 
-  // Use the date as a seed so everyone gets the same film each day
-  const date = req.query.date || new Date().toISOString().slice(0, 10);
-  const seed = date.replace(/-/g, '');
-  const filmId = FILM_POOL[parseInt(seed) % FILM_POOL.length];
-
   try {
-    const base = 'https://api.themoviedb.org/3';
-    const [detailsRes, creditsRes] = await Promise.all([
-      fetch(`${base}/movie/${filmId}?api_key=${API_KEY}`),
-      fetch(`${base}/movie/${filmId}/credits?api_key=${API_KEY}`),
-    ]);
-    const details = await detailsRes.json();
-    const credits = await creditsRes.json();
+    // Build the pool fresh each day (Vercel caches this automatically)
+    const pool = await buildFilmPool(API_KEY);
+    if (!pool.length) throw new Error('Film pool is empty');
 
-    // Build cast: filter named acting roles, reverse billing order (least → most famous)
-    const cast = credits.cast
-      .filter(a => a.known_for_department === 'Acting' && a.character && !a.character.toLowerCase().includes('uncredited'))
-      .slice(0, 6)
-      .reverse()
-      .map(a => ({ name: a.name, role: a.character }));
+    // Pick today's film using the date as a seed
+    const date = req.query.date || new Date().toISOString().slice(0, 10);
+    const seed = parseInt(date.replace(/-/g, ''));
+    const filmId = pool[seed % pool.length];
 
-    const director = credits.crew.find(c => c.job === 'Director');
-
-    res.status(200).json({
-      title: details.title,
-      year: details.release_date?.slice(0, 4) || 'N/A',
-      imdb: details.vote_average?.toFixed(1) || 'N/A',
-      genre: details.genres?.slice(0, 2).map(g => g.name).join(' / ') || 'N/A',
-      director: director?.name || 'N/A',
-      runtime: details.runtime ? `${details.runtime} min` : 'N/A',
-      cast,
-    });
+    const film = await fetchFilmData(API_KEY, filmId);
+    res.status(200).json(film);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch film data', detail: err.message });
+    res.status(500).json({ error: 'Failed to load film', detail: err.message });
   }
 }
