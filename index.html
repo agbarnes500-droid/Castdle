@@ -544,7 +544,10 @@ inp.addEventListener('keydown',e=>{
   else if(e.key==='ArrowUp'){selectedAC=Math.max(selectedAC-1,0);ac.querySelectorAll('.ac-item').forEach((x,i)=>x.classList.toggle('active',i===selectedAC));}
   else if(e.key==='Enter'){selectedAC>=0&&items[selectedAC]?selectG(items[selectedAC].textContent):submitGuess();}
 });
-document.getElementById('btn-guess').addEventListener('click',submitGuess);
+document.getElementById('btn-guess').addEventListener('click', function(){
+  if(!film){ showToast('Game not loaded yet.'); return; }
+  submitGuess();
+});
 
 // ── GUESS ──────────────────────────────────────────────────────────────────
 function submitGuess(){
